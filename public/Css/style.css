@@ -1,0 +1,2614 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat";
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #fff;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Система единых отступов */
+.main {
+    max-width: 1350px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+/* Адаптивные отступы для .main */
+@media (max-width: 768px) {
+    .main {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main {
+        padding: 15px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .main {
+        padding: 12px !important;
+    }
+}
+
+@media (max-width: 320px) {
+    .main {
+        padding: 10px 12px !important;
+    }
+}
+
+.hero-section {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+
+    /* управление высотой hero-фона (адаптивно через media queries ниже) */
+    --hero-bg-height: 700px;
+
+    /* важно: секция должна расти по контенту (каталог/футер) */
+    min-height: var(--hero-bg-height);
+    height: auto;
+
+    /* создаём stacking context, чтобы фон с z-index:-1 не вылезал */
+    isolation: isolate;
+}
+
+/* Убираем padding-top у .main внутри hero-section */
+.hero-section > .main {
+    padding-top: 0;
+}
+
+.hero-bg-container {
+    position: absolute;
+
+    /* фон начинается сразу под фиксированным header */
+    top: 80px;
+
+    left: 0;
+    right: 0;
+
+    /* фон без отступов — ровно во весь экран */
+    width: 100%;
+    max-width: 100%;
+
+    /* высота фона = высота hero минус высота header */
+    height: calc(var(--hero-bg-height) - 80px);
+
+    /* фон ВСЕГДА сзади (на всякий случай уводим в отрицательный слой) */
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Текст hero поверх фона */
+.hero-text-container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Слои для плавной смены фоновой картинки (React HeroSlider) */
+.hero-bg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hero-bg-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* filter на большом слое сильно грузит GPU => заменили на overlay ниже */
+    transition: opacity var(--hero-fade-ms, 600ms) ease;
+    will-change: opacity;
+    
+    /* Улучшенное качество отображения изображений */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+/* Дешёвое затемнение вместо filter() */
+.hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    pointer-events: none;
+}
+
+.hero-bg-layer--current {
+    opacity: 1;
+    z-index: 1;
+}
+
+.hero-bg-layer--next {
+    opacity: 0;
+    z-index: 2;
+}
+
+.hero-bg-layer--next.is-visible {
+    opacity: 1;
+}
+
+@media (max-width: 1024px) {
+    .hero-section {
+        --hero-bg-height: 600px;
+    }
+    
+    .hero-top-content {
+        padding-top: 80px;
+        padding-bottom: 20px;
+    }
+}
+
+@media (max-width: 425px) {
+    .hero-section {
+        --hero-bg-height: 400px;
+    }
+
+    .hero-text-inner {
+        min-height: 180px;
+    }
+
+    .hero-top-content {
+        padding-top: 70px;
+        padding-bottom: 15px;
+    }
+
+    .hero-title {
+        font-size: 36px;
+    }
+
+    .hero-text {
+        font-size: 16px;
+    }
+
+    /* Скрываем кнопки навигации слайдера на мобильных */
+    .hero-nav-container {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        --hero-bg-height: 320px;
+    }
+
+    .hero-bg-container {
+        top: 65px;
+        height: calc(var(--hero-bg-height) - 65px);
+    }
+
+    .hero-top-content {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 15px;
+    }
+
+    .hero-text-container .hero-title {
+        font-size: 18px !important;
+        margin-top: 10px;
+        line-height: 1.2;
+    }
+
+    .hero-text-container .hero-text {
+        font-size: 11px !important;
+        max-width: 100%;
+        margin-top: 6px;
+        line-height: 1.3;
+    }
+
+    .hero-heshtag-container .hero-heshtag {
+        font-size: 11px !important;
+        padding: 5px 10px;
+        min-width: 70px;
+    }
+
+    .hero-nav-container {
+        padding: 4px;
+        gap: 3px;
+    }
+
+    .hero-nav-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .hero-nav-image {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Показываем category-tabs в виде сетки на маленьких экранах */
+    .category-tabs-panel {
+        display: block !important;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 15px 10px;
+        border-radius: 20px;
+    }
+
+    .category-tabs-scroll {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+    }
+
+    .category-tabs-buttons {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 8px !important;
+    }
+
+    .category-tab-btn {
+        font-size: 12px;
+        padding: 8px 14px;
+        white-space: nowrap;
+        flex-shrink: 1;
+    }
+
+    /* Скрываем кастомный скролл-бар на мобильных */
+    .category-tabs-scrollbar {
+        display: none !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .hero-section {
+        --hero-bg-height: 300px;
+    }
+
+    .hero-bg-container {
+        top: 58px;
+        height: calc(var(--hero-bg-height) - 58px);
+    }
+
+    .hero-top-content {
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-bottom: 12px;
+    }
+
+    .category-tabs-panel {
+        padding: 12px 8px;
+        border-radius: 16px;
+    }
+
+    .category-tabs-buttons {
+        gap: 6px;
+    }
+
+    .category-tab-btn {
+        font-size: 11px;
+        padding: 7px 12px;
+    }
+
+    .hero-text-container .hero-title {
+        font-size: 16px !important;
+        margin-top: 8px;
+        line-height: 1.2;
+        -webkit-line-clamp: 3;
+    }
+
+    .hero-text-container .hero-text {
+        font-size: 10px !important;
+        margin-top: 5px;
+        line-height: 1.3;
+    }
+
+    .hero-heshtag-container .hero-heshtag {
+        font-size: 10px !important;
+        padding: 5px 9px;
+        min-width: 60px;
+    }
+
+    .hero-text-inner {
+        min-height: 140px;
+    }
+
+    .hero-heshtag-container {
+        min-height: 36px;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .hero-nav-container {
+        width: 100%;
+        max-width: 100%;
+        justify-content: center;
+        padding: 3px;
+        gap: 2px;
+    }
+
+    .hero-nav-btn {
+        width: 24px;
+        height: 24px;
+    }
+
+    .hero-nav-image {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+@media (max-width: 320px) {
+    .hero-section {
+        --hero-bg-height: 280px;
+    }
+
+    .hero-bg-container {
+        top: 56px;
+        height: calc(var(--hero-bg-height) - 56px);
+    }
+
+    .hero-top-content {
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 10px;
+    }
+
+    .hero-text-container .hero-title {
+        font-size: 20px !important;
+        margin-top: 10px;
+        line-height: 1.2;
+    }
+
+    .hero-text-container .hero-text {
+        font-size: 9px !important;
+        margin-top: 4px;
+        line-height: 1.3;
+    }
+
+    .hero-heshtag-container .hero-heshtag {
+        font-size: 9px !important;
+        padding: 4px 8px;
+        min-width: 55px;
+    }
+
+    .hero-text-inner {
+        min-height: 110px;
+    }
+
+    .hero-heshtag-container {
+        min-height: 28px;
+        gap: 3px;
+    }
+
+    .hero-nav-container {
+        padding: 3px;
+        gap: 2px;
+    }
+
+    .hero-nav-btn {
+        width: 22px;
+        height: 22px;
+    }
+
+    .hero-nav-image {
+        width: 11px;
+        height: 11px;
+    }
+
+    .product-panel-container {
+        padding: 0 !important;
+    }
+
+    .category-tabs-panel {
+        padding: 10px 6px;
+        border-radius: 14px;
+    }
+
+    .category-tabs-buttons {
+        gap: 5px;
+    }
+
+    .category-tab-btn {
+        font-size: 10px;
+        padding: 6px 10px;
+    }
+}
+
+.hero-bg {
+    width: 100%;
+    height: 100%;
+    background-image: url(/Images/hero-bg.png);
+    background-size: cover;
+    background-position: center;
+}
+
+.main {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+}
+
+.hero-content {
+    color: white;
+    max-width: 600px;
+}
+
+.hero-container {
+    margin-top: 0;
+    width: 100%;
+}
+
+.hero-heshtag-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    /* фиксируем высоту строки, чтобы не было скачков */
+    min-height: 56px;
+}
+
+.hero-heshtag {
+    font-family: "Unbounded";
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #fff;
+    background: rgba(180, 63, 32, .75);
+    backdrop-filter: blur(5px);
+    padding: 12px 20px;
+    border-radius: 50px;
+
+    /* чтобы блок не "прыгал" из-за разной длины текста */
+    min-width: 140px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.hero-title {
+    font-family: "Unbounded";
+    font-weight: 700;
+    font-size: 52px;
+    color: #fff;
+    text-transform: uppercase;
+    max-width: 770px;
+    margin-top: 30px;
+
+    /* чтобы категории/инфо не прыгали от разной длины заголовка */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.hero-text {
+    font-weight: 400;
+    font-size: 18px;
+    color: #CCCCCC;
+    max-width: 420px;
+    margin-top: 10px;
+
+    /* чтобы блок ниже не прыгал от разной длины текста */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.hero-nav-container {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 8px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-between;
+    max-width: fit-content;
+
+    margin-left: auto;
+}
+
+.hero-nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.hero-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.hero-nav-image {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
+}
+
+.hero-nav-btn:hover .hero-nav-image {
+    filter: brightness(1);
+}
+
+#right-arrow {
+    transform: rotate(180deg);
+}
+
+.hero-bg {
+    transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-heshtag,
+.hero-title,
+.hero-text {
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.hero-nav-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-nav-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform: translate(-50%, -50%);
+}
+
+.hero-nav-btn:hover::after {
+    width: 40px;
+    height: 40px;
+}
+
+.hero-nav-btn:active::after {
+    width: 35px;
+    height: 35px;
+}
+
+.hero-top-content {
+    /* hero (текст) + категории + инфо */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 40px;
+
+    /* фиксируем высоту hero-зоны: hero-текст растягивается и центрируется */
+    height: var(--hero-bg-height);
+}
+
+/* Большой контейнер под hero-текст: занимает пространство от header до категорий.
+   Текст внутри — по вертикальному центру, но слева. */
+.hero-top-content > .hero-text-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    /* вертикальный центр внутри выделенного пространства */
+    justify-content: start;
+
+    /* слева */
+    align-items: flex-start;
+}
+
+/* Внутренний блок фиксированной высоты.
+   Иначе при justify-content:center разная высота текста на слайдах даёт "прыжки". */
+.hero-text-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    /* резервируем место под hashtag + title + text */
+    min-height: 260px;
+}
+
+/* Индикаторы слайдов (точки) */
+.hero-dots {
+    display: none; /* Скрыты по умолчанию на десктопе */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.hero-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.hero-dot:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.hero-dot--active {
+    background: #fff;
+    border-color: #fff;
+    width: 12px;
+    height: 12px;
+}
+
+@media (max-width: 425px) {
+    .hero-dots {
+        display: flex; /* Показываем на мобильных */
+        margin-top: auto;
+        padding-top: 15px;
+        padding-bottom: 8px;
+        gap: 8px;
+    }
+    
+    .hero-dot {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .hero-dot--active {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-dots {
+        margin-top: auto;
+        padding-top: 10px;
+        padding-bottom: 6px;
+        gap: 6px;
+    }
+    
+    .hero-dot {
+        width: 7px;
+        height: 7px;
+        border-width: 1.5px;
+    }
+    
+    .hero-dot--active {
+        width: 9px;
+        height: 9px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .hero-text-inner {
+        height: 250px;
+        min-height: auto;
+    }
+}
+
+/* Медиа-запросы для hero перенесены выше, чтобы не переопределять мелкие экраны */
+
+.food-categories-container {
+    /* теперь в рамках .main, без растяжения на весь экран */
+    margin-top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.food-categories-panel {
+    width: 100%;
+    background: rgba(255, 255, 255, .1);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 30px 20px;
+    margin: 0;
+    max-width: 100%;
+}
+
+.food-categories-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: hidden;
+}
+
+.food-categories-scroll-wrapper::-webkit-scrollbar {
+    height: 4px;
+}
+
+.food-categories-scroll-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.food-categories-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 2px;
+}
+
+.food-categories-scroll-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+}
+
+.food-categories-btn-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.food-categories-btn {
+    font-family: "Unbounded", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: #fff;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, .12);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    border: none;
+    padding: 10px 15px;
+    transition: 300ms;
+    cursor: pointer;
+    white-space: nowrap; 
+    flex-shrink: 0;
+}
+
+.food-categories-btn:hover {
+    background: rgba(255, 255, 255, .3);
+}
+
+.food-categories-btn--disabled {
+    background: transparent;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.food-categories-btn--disabled:hover {
+    background: transparent;
+}
+
+.food-categories-btn.active-food:hover {
+    background: #db613f;
+}
+
+.active-food {
+    background: #B43F20;
+}
+
+.info-panel-container {
+    width: 100%;
+    background: #fff;
+    padding: 30px;
+    border-radius: 45px;
+}
+
+.info-panel {
+    width: 100%;
+    background: #C4684F;
+    border-radius: 25px;
+    border: 1px solid #FB997F;
+    padding: 12px 15px;
+    display: flex;
+}
+
+.info-icon {
+    width: 65px;
+    height: 65px;
+    margin-right: 15px;
+}
+
+.info-title {
+    font-family: "Unbounded";
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 18px;
+    color: #fff;
+    max-width: 320px;
+}
+
+.info-text {
+    font-size: 16px;
+    color: rgba(255, 255, 255, .5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+main {
+    padding: 20px;
+}
+
+.product-container {
+    margin-top: 30px;
+}
+
+.product-title {
+    font-family: "Unbounded";
+    font-weight: 700;
+    font-size: 48px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-wrapper-title {
+    font-family: "Unbounded";
+    font-weight: 600;
+    font-size: 24px;
+    text-transform: uppercase;
+    margin-top: 16px;
+    padding-left: 24px;
+    color: #1a1a1a;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+.product-wrapper-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #B43F20;
+    border-radius: 2px;
+}
+
+.product-panel {
+    width: 100%;
+    background: #E4E4E4;
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
+
+    /* одинаковая высота в рамках строки грида */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Бейдж популярного товара */
+.featured-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    background-color: #B43F20;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(180, 63, 32, 0.3);
+}
+
+/* legacy id (оставляем, но без фиксированной высоты) */
+#small-product-panel {
+    height: auto;
+}
+
+.product-panel-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.product-panel-image:hover {
+    transform: scale(1.02);
+}
+
+.product-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.product-panel-image:hover .product-image-overlay {
+    opacity: 1;
+}
+
+.product-image-icon {
+    background: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #B43F20;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.product-panel-info {
+    --product-info-padding: 16px;
+
+    padding: var(--product-info-padding);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+
+    /* чтобы элементы внутри не наезжали друг на друга */
+    gap: 12px;
+}
+
+.product-panel-container {
+    width: 100%;
+    display: grid;
+
+    /* максимум 4 карточки в ряд */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: clamp(12px, 1.5vw, 20px);
+
+    /* фиксит проблему "нет отступа справа" и делает сетку предсказуемой */
+    padding: 20px 0;
+    box-sizing: border-box;
+
+    /* одинаковая высота карточек в строке */
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+}
+
+@media (max-width: 1100px) {
+    .product-panel-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .product-panel-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .product-panel-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .food-categories-panel {
+        padding-bottom: 20px;
+    }
+
+    .product-container {
+        margin-top: 30px;
+    }
+
+    .product-title {
+        font-size: 36px;
+    }
+
+    .product-wrapper-title {
+        font-size: 20px;
+        margin-bottom: 18px;
+        margin-top: 32px;
+        padding-left: 20px;
+    }
+    
+    .product-wrapper-title::before {
+        width: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-panel-container {
+        padding: 12px 0;
+    }
+
+    .product-panel-info {
+        --product-info-padding: 12px;
+        padding: var(--product-info-padding);
+    }
+}
+
+.product-panel-title-container {
+    display: flex;
+    align-items: flex-start;
+
+    /* место справа под абсолютную граммовку */
+    /* по умолчанию для 2+ строк */
+    padding-right: 40px;
+}
+
+.product-panel-title {
+    font-family: "Unbounded";
+    font-weight: 700;
+    font-size: 16px;
+    color: #000;
+    text-transform: uppercase;
+
+    /* важно для переноса внутри flex-контейнера */
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+
+    /* чтобы карточки не "плясали" по высоте из-за длинных названий */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+
+}
+
+/* Для одной строки - увеличиваем padding-right */
+.product-panel-title-container.one-line {
+    padding-right: 80px;
+}
+
+.product-panel-gram {
+    font-size: 13px;
+    font-weight: 400;
+    color: #828282;
+
+    position: absolute;
+    top: var(--product-info-padding);
+    right: var(--product-info-padding);
+
+    margin-left: 0;
+}
+
+.procut-text {
+    font-size: 14px;
+    color: #828282;
+    font-weight: 400;
+    margin-top: 0;
+
+    /* ограничиваем описание, чтобы высота карточек была одинаковой */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.product-btn-container {
+    /* кнопка всегда внизу карточки, но высота карточки остается адаптивной */
+    margin-top: auto;
+
+    /* чтобы кнопка не "прилипала" к описанию */
+    padding-top: 16px;
+}
+
+.product-btn {
+    font-family: "Unbounded";
+    font-weight: 500;
+    font-size: 14px;
+    color: #fff;
+    text-transform: uppercase;
+    background: #B43F20;
+    border-radius: 50px;
+    border: none;
+    width: 100%;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: 300ms;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-btn:hover {
+    background: #C4684F;
+}
+
+@keyframes bounceIn {
+    0% { 
+        transform: scale(0.3); 
+        opacity: 0; 
+    }
+    50% { 
+        transform: scale(1.1); 
+    }
+    100% { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+}
+
+.number-container {
+    background-color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Для кнопки товара - рядом с ценой */
+.product-btn .number-container {
+    position: relative;
+    margin-left: 8px;
+    top: auto;
+    right: auto;
+}
+
+/* Для Header - относительное позиционирование с отступом */
+.cart-btn .number-container {
+    position: relative;
+    margin-left: 8px;
+    top: auto;
+    right: auto;
+}
+
+.number {
+    color: #B43F20;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.number-container.show {
+    animation: bounceIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.product-btn:active::after {
+    width: 100px;
+    height: 100px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.product-btn.added {
+    animation: pulse 0.5s ease-in-out;
+}
+
+.product-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkmark-icon {
+    font-size: 24px;
+    font-weight: bold;
+    animation: bounceIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+@keyframes rippleEffect {
+    from {
+        width: 0;
+        height: 0;
+        opacity: 0.8;
+    }
+    to {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+}
+
+.toast-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 998;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: white;
+    border-radius: 8px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: auto;
+    animation: slideInRight 0.3s ease;
+}
+
+.toast p {
+    margin: 0;
+    font-size: 13px;
+    color: #333;
+    flex: 1;
+}
+
+.toast-success p {
+    color: #2e7d32;
+}
+
+.toast-warning p {
+    color: #e65100;
+}
+
+.toast-error p {
+    color: #c62828;
+}
+
+.toast-delivery {
+    min-width: 350px;
+}
+
+.toast-delivery p {
+    color: #333;
+    margin: 0;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.toast-close:hover {
+    color: #333;
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    transform-origin: left;
+}
+
+.toast-progress-success {
+    background: #B43F20;
+}
+
+.toast-progress-warning {
+    background: #B43F20;
+}
+
+.toast-progress-error {
+    background: #B43F20;
+}
+
+.toast-progress-delivery {
+    background: #B43F20;
+}
+
+@keyframes progressBar {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+@media (max-width: 768px) {
+    .toast-container {
+        right: 20px;
+        left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .toast-container {
+        right: 15px;
+        left: 15px;
+    }
+
+    .toast {
+        min-width: unset;
+        max-width: unset;
+    }
+}
+
+@media (max-width: 375px) {
+    .toast-container {
+        top: 80px;
+    }
+    
+    .toast p {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 320px) {
+    .toast-container {
+        top: 70px;
+        right: 12px;
+        left: 12px;
+    }
+    
+    .toast p {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-btn {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .product-panel-title {
+        font-size: 15px;
+    }
+
+    .procut-text {
+        font-size: 13px;
+    }
+}
+
+/* Старый delivery блок удалён - используется AddressSearch компонент */
+
+.image-slider-container {
+    margin-top: 75px;
+    position: relative;
+    width: 900px;
+    max-width: 95vw;
+    height: 550px;
+    max-height: 80vh;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    background: #000;
+}
+
+.image-slider-active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.image-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 0;
+}
+
+.image-slider-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.image-slider-controller {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 10;
+}
+
+.image-slider-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 28px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.image-slider-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.image-slider-btn:active {
+    transform: scale(0.95);
+}
+
+.slider-image-indicator-container {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.indicator.active {
+    background: #fff;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.indicator:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.1);
+}
+
+.image-slider-counter {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.image-slider-active {
+    animation: slideIn 0.5s ease-out;
+}
+
+@media (max-width: 768px) {
+    .image-slider-container {
+        height: 450px;
+        border-radius: 15px;
+    }
+    
+    .image-slider-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    .slider-image-indicator-container {
+        bottom: 20px;
+        padding: 8px 12px;
+    }
+    
+    .indicator {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .image-slider-counter {
+        top: 20px;
+        right: 20px;
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-slider-container {
+        height: 350px;
+        border-radius: 10px;
+    }
+    
+    .image-slider-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        padding: 0 10px;
+    }
+    
+    .image-slider-controller {
+        padding: 0 10px;
+    }
+    
+    .slider-image-indicator-container {
+        bottom: 15px;
+        gap: 8px;
+        padding: 6px 10px;
+    }
+    
+    .indicator {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .image-slider-counter {
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+.image-slider-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.1) 0%,
+        transparent 50%,
+        rgba(0, 0, 0, 0.1) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+}
+
+.image-slider-img {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.image-slider-img.loaded {
+    background: none;
+    animation: none;
+}
+
+@media (max-width: 1110px) {
+    .food-categories-panel {
+        background: none;
+        backdrop-filter: blur(0px);
+    }
+
+    .food-categories-btn {
+        background: #fff;
+        color: #000;
+        transform: scale(0.9);
+    }
+
+    .food-categories-btn.active-food {
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 768px) {
+    .food-categories-container {
+        margin-top: 20px;
+    }
+    
+    .food-categories-panel {
+        padding: 20px 15px;
+        border-radius: 20px;
+
+    }
+    
+    .food-categories-btn {
+        font-size: 11px;
+        padding: 8px 12px;
+    }
+
+    .info-container {
+        margin-top: 100px;
+    }
+
+    .info-panel-container {
+        padding: 15px;
+    }
+
+    .dilivery-text {
+        font-size: 16px;
+    }
+
+    .dilivery-title {
+        font-size: 24px;
+    }
+
+    .product-wrapper-title {
+        font-size: 15px;
+        margin-bottom: 12px;
+        margin-top: 20px;
+        padding-left: 16px;
+    }
+    
+    .product-wrapper-title::before {
+        width: 3px;
+    }
+
+    .product-title {
+        font-size: 24px;
+    }
+
+    .food-categories-container {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 540px) {
+    .info-title {
+        font-size: 12px;
+    }
+
+    .info-text {
+        font-size: 10px;
+        margin-top: 5px;
+    }
+
+    .info-icon {
+        width: 55px;
+        height: 55px;
+    }
+
+    .info-panel-container {
+        border-radius: 30px;
+    }
+
+    .info-panel {
+        border-radius: 20px;
+    }
+}
+
+@media (max-width: 480px) {        
+    .food-categories-panel {
+        padding: 15px 10px;
+        border-radius: 15px;
+    }
+    
+    .food-categories-btn {
+        font-size: 10px;
+        padding: 6px 10px;
+    }
+    
+    .food-categories-btn-container {
+        gap: 8px;
+    }
+
+    .info-container {
+        margin-top: 125px;
+    }
+
+    .product-title {
+        font-size: 18px;
+    }
+
+    .product-wrapper-title {
+        font-size: 14px;
+        margin-bottom: 10px;
+        margin-top: 16px;
+        padding-left: 14px;
+    }
+    
+    .product-wrapper-title::before {
+        width: 2px;
+        border-radius: 1px;
+    }
+}
+
+@media (max-width: 400px) {
+    .info-title {
+        font-size: 10px;
+    }
+}
+
+/* div {
+    border: 1px solid red;
+} */
+/* Product Modal Styles */
+.product-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.product-modal-content {
+    background: white;
+    border-radius: 30px;
+    max-width: 1200px;
+    cursor: default;
+    z-index: 10002;
+    width: 100%;
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.product-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #B43F20;
+    color: #fff;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-modal-close:hover {
+    background: #db613f;
+    color: #fff;
+    transform: rotate(90deg) scale(1.1);
+}
+
+.product-modal-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 40px;
+}
+
+.product-modal-image {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.product-modal-image .modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-modal-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    justify-content: space-between;
+}
+
+.product-modal-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.product-modal-title {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: #000;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.product-modal-gram {
+    font-size: 16px;
+    font-weight: 400;
+    color: #828282;
+}
+
+.product-modal-description {
+    flex: 1;
+}
+
+.product-modal-subtitle {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #000;
+    margin: 0 0 12px 0;
+}
+
+.product-modal-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+}
+
+.product-modal-footer {
+    margin-top: auto;
+}
+
+.product-modal-btn {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: #fff;
+    text-transform: uppercase;
+    background: #B43F20;
+    border-radius: 50px;
+    border: none;
+    width: 100%;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: 300ms;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-modal-btn:hover {
+    background: #8B2F18;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(180, 63, 32, 0.3);
+}
+
+/* Responsive для модалки */
+@media (max-width: 768px) {
+    .product-modal-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px;
+    }
+
+    .product-modal-title {
+        font-size: 20px;
+    }
+
+    .product-modal-subtitle {
+        font-size: 16px;
+    }
+
+    .product-modal-text {
+        font-size: 14px;
+    }
+
+    .product-modal-btn {
+        font-size: 16px;
+        padding: 14px 18px;
+    }
+
+    .product-modal-close {
+        top: 15px;
+        right: 15px;
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-modal-overlay {
+        padding: 10px;
+    }
+
+    .product-modal-content {
+        border-radius: 20px;
+        max-height: 95vh;
+    }
+
+    .product-modal-layout {
+        padding: 20px;
+        gap: 20px;
+    }
+}
+
+/* Category Info Banner - компактный инфо-блок для категорий (в стиле Toast) */
+.category-info-banner {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0 0 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.category-info-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #B43F20;
+    flex-shrink: 0;
+}
+
+.category-info-text {
+    font-size: 14px;
+    color: #333;
+    margin: 0;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .category-info-banner {
+        margin: 10px 0 16px 0;
+        padding: 10px 14px;
+    }
+
+    .category-info-text {
+        font-size: 13px;
+    }
+}
+
+/* Category Tabs Component - новый компонент с кастомным скролл-баром */
+
+/* Responsive для CategoryTabs - показываем в разных местах в зависимости от экрана */
+.category-tabs-desktop {
+    display: block; /* Показываем на больших экранах */
+}
+
+.category-tabs-mobile {
+    display: none; /* Скрываем на больших экранах */
+}
+
+@media (max-width: 425px) {
+    .category-tabs-desktop {
+        display: none; /* Скрываем на маленьких экранах */
+    }
+    
+    .category-tabs-mobile {
+        display: block; /* Показываем на маленьких экранах */
+    }
+}
+
+.category-tabs-container {
+    margin-top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.category-tabs-panel {
+    width: 100%;
+    background: rgba(255, 255, 255, .1);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 30px 20px 20px 20px;
+    position: relative;
+}
+
+.category-tabs-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* Скрываем нативный скролл-бар */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.category-tabs-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.category-tabs-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.category-tab-btn {
+    font-family: "Unbounded", Arial, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: #fff;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, .12);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    border: none;
+    padding: 10px 15px;
+    transition: 300ms;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.category-tab-btn:hover {
+    background: rgba(255, 255, 255, .3);
+}
+
+.category-tab-btn.active {
+    background: #B43F20;
+}
+
+.category-tab-btn.active:hover {
+    background: #db613f;
+}
+
+/* Белый фон для кнопок на маленьких экранах */
+@media (max-width: 768px) {
+    .category-tabs-mobile .category-tabs-panel {
+        background: #f8f8f8;
+        backdrop-filter: none;
+        padding: 10px 10px 8px 10px;
+        border-radius: 20px;
+    }
+    
+    .category-tabs-mobile .category-tab-btn {
+        background: #fff;
+        color: #333;
+        font-size: 9px;
+        padding: 6px 9px;
+        border-radius: 40px;
+    }
+    
+    .category-tabs-mobile .category-tab-btn:hover {
+        background: #f5f5f5;
+    }
+    
+    .category-tabs-mobile .category-tab-btn.active {
+        background: #B43F20;
+        color: #fff;
+    }
+    
+    .category-tabs-mobile .category-tab-btn.active:hover {
+        background: #db613f;
+    }
+    
+    .category-tabs-mobile .category-tabs-buttons {
+        gap: 5px;
+    }
+    
+    /* Уменьшаем отступ между category-tabs и product-container на мобильных */
+    .product-container {
+        margin-top: 8px;
+    }
+    
+    .product-wrapper-title {
+        font-size: 16px;
+        margin-top: 16px;
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-tabs-mobile .category-tabs-panel {
+        padding: 8px 8px 6px 8px;
+    }
+    
+    .category-tabs-mobile .category-tabs-buttons {
+        gap: 4px;
+    }
+}
+
+@media (max-width: 375px) {
+    .category-tabs-mobile {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .category-tabs-mobile .category-tabs-panel {
+        padding: 0;
+        border-radius: 14px;
+    }
+    
+    .category-tabs-mobile .category-tabs-scroll {
+        overflow-x: visible;
+    }
+    
+    .category-tabs-mobile .category-tabs-buttons {
+        flex-wrap: wrap !important;
+        gap: 7px 4px !important;
+        justify-content: space-between !important;
+    }
+    
+    .category-tabs-mobile .category-tab-btn {
+        font-size: 9px !important;
+        padding: 8px 8px !important;
+        flex: 0 1 auto;
+        min-width: fit-content;
+    }
+}
+
+@media (max-width: 320px) {
+    .category-tabs-mobile {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .category-tabs-mobile .category-tabs-panel {
+        padding: 0;
+        border-radius: 12px;
+    }
+    
+    .category-tabs-mobile .category-tabs-scroll {
+        overflow-x: visible;
+    }
+    
+    .category-tabs-mobile .category-tabs-buttons {
+        flex-wrap: wrap !important;
+        gap: 6px 3px !important;
+        justify-content: space-between !important;
+    }
+    
+    .category-tabs-mobile .category-tab-btn {
+        font-size: 8px !important;
+        padding: 7px 7px !important;
+        flex: 0 1 auto;
+        min-width: fit-content;
+    }
+}
+
+/* Кастомный скролл-бар */
+.category-tabs-scrollbar {
+    width: 100%;
+    height: 4px;
+    background: transparent;
+    border-radius: 2px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.category-tabs-scrollbar-thumb {
+    position: absolute;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 2px;
+}
+
+@media (max-width: 1400px) {
+    .category-tabs-panel {
+        padding: 25px 20px 18px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .category-tabs-panel {
+        padding: 20px 15px 15px 15px;
+    }
+    
+    .category-tab-btn {
+        font-size: 11px;
+        padding: 8px 12px;
+    }
+    
+    .category-tabs-buttons {
+        gap: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-modal-overlay {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-modal-overlay {
+        padding: 15px;
+    }
+}
+
+
+/* 426px и выше уже настроены ранее */
+
+/* Только для 376px - 425px */
+@media (min-width: 376px) and (max-width: 425px) {
+    .category-tabs-mobile {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .category-tabs-mobile .category-tabs-panel {
+        padding: 0;
+        border-radius: 14px;
+    }
+    
+    .category-tabs-mobile .category-tabs-scroll {
+        overflow-x: visible;
+    }
+    
+    .category-tabs-mobile .category-tabs-buttons {
+        flex-wrap: wrap !important;
+        gap: 6px 4px !important;
+        justify-content: space-between !important;
+    }
+    
+    .category-tabs-mobile .category-tab-btn {
+        font-size: 11px !important;
+        padding: 8px 9px !important;
+        flex: 0 1 auto;
+        min-width: fit-content;
+    }
+}
+
+/* Только для 321px - 375px */
+@media (min-width: 321px) and (max-width: 375px) {
+    .category-tabs-mobile {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .category-tabs-mobile .category-tabs-panel {
+        padding: 0;
+        border-radius: 14px;
+    }
+    
+    .category-tabs-mobile .category-tabs-scroll {
+        overflow-x: visible;
+    }
+    
+    .category-tabs-mobile .category-tabs-buttons {
+        flex-wrap: wrap !important;
+        gap: 7px 4px !important;
+        justify-content: space-between !important;
+    }
+    
+    .category-tabs-mobile .category-tab-btn {
+        font-size: 9px !important;
+        padding: 8px 8px !important;
+        flex: 0 1 auto;
+        min-width: fit-content;
+    }
+}
+
+/* 320px и меньше */
+@media (max-width: 320px) {
+    .category-tabs-mobile {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .category-tabs-mobile .category-tabs-panel {
+        padding: 0;
+        border-radius: 12px;
+    }
+    
+    .category-tabs-mobile .category-tabs-scroll {
+        overflow-x: visible;
+    }
+    
+    .category-tabs-mobile .category-tabs-buttons {
+        flex-wrap: wrap !important;
+        gap: 6px 3px !important;
+        justify-content: space-between !important;
+    }
+    
+    .category-tabs-mobile .category-tab-btn {
+        font-size: 8px !important;
+        padding: 7px 7px !important;
+        flex: 0 1 auto;
+        min-width: fit-content;
+    }
+}
+
+@media (min-width: 376px) and (max-width: 425px) {
+    .toast-container {
+        top: 80px;
+    }
+    
+    .toast p {
+        font-size: 11px;
+    }
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+    .category-tabs-panel {
+        padding: 25px 20px 20px 20px;
+    }
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+    .hero-title {
+        font-size: 34px;
+    }
+
+    .hero-text {
+        font-size: 16px;
+    }
+    
+    .hero-hashtag {
+        font-size: 13px;
+    }
+}
+
+
+/* Hero-слайдер с закруглениями для планшетов */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .hero-section {
+        --hero-bg-height: 450px;
+    }
+    
+    .hero-container {
+        max-width: 1350px;
+        margin: 0 auto;
+    }
+    
+    .hero-top-content {
+        position: relative;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 450px;
+        box-sizing: border-box;
+        border-radius: 30px;
+        overflow: hidden;
+        margin-top: 100px;
+    }
+    
+    .hero-bg-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        border-radius: 30px;
+    }
+    
+    .hero-bg {
+        height: 100%;
+    }
+    
+    .hero-text-container {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+    }
+}
+
+/* Увеличенный hero-слайдер на больших экранах с закруглениями */
+@media (min-width: 1024px) {
+    .hero-section {
+        --hero-bg-height: 600px;
+    }
+    
+    .hero-container {
+        max-width: 1350px;
+        margin: 0 auto;
+    }
+    
+    .hero-top-content {
+        position: relative;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 600px;
+        box-sizing: border-box;
+        border-radius: 30px;
+        overflow: hidden;
+        margin-top: 140px;
+    }
+    
+    .hero-bg-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        border-radius: 30px;
+    }
+    
+    .hero-bg {
+        height: 100%;
+    }
+    
+    .hero-text-container {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+    }
+}
+
+@media (min-width: 1440px) {
+    .hero-section {
+        --hero-bg-height: 600px;
+    }
+    
+    .hero-container {
+        max-width: 1350px;
+        margin: 0 auto;
+    }
+    
+    .hero-top-content {
+        position: relative;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 600px;
+        box-sizing: border-box;
+        border-radius: 30px;
+        overflow: hidden;
+        margin-top: 140px;
+    }
+    
+    .hero-bg-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        border-radius: 30px;
+    }
+    
+    .hero-bg {
+        height: 100%;
+    }
+    
+    .hero-text-container {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+    }
+    
+    .hero-title {
+        font-size: 56px;
+    }
+    
+    .hero-text {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 1440px) {

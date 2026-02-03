@@ -1,0 +1,1049 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat";
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #fff;
+}
+
+a {
+    text-decoration: none;
+}
+
+.header {
+    background-color: rgba(255, 255, 255, .9);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001; /* Выше burger-menu */
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    /* отступы как у основного контейнера (.main / product-container) */
+    max-width: 1350px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 15px 30px;
+    box-sizing: border-box;
+}
+
+/* Убираем outline для всех кнопок и ссылок в header */
+.header button,
+.header a,
+.header div[role="button"] {
+    outline: none !important;
+}
+
+.header button:focus,
+.header a:focus,
+.header div[role="button"]:focus {
+    outline: none !important;
+}
+
+@media (max-width: 1024px) {
+    .header-container {
+        padding: 15px 20px;
+    }
+}
+
+.logo-container {
+    flex: 0 0 auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    text-decoration: none;
+}
+
+.logo-container:hover {
+    transform: translateY(-2px);
+}
+
+.logo-container:active {
+    transform: translateY(0);
+}
+
+.logo {
+    height: 60px;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.search-container {
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.search-input {
+    width: 100%;
+    padding: 15px 50px 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.search-input:focus {
+    border-color: #B43F20;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #B43F20;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #B43F20;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    margin-top: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+}
+
+.search-result-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.search-result-item:hover {
+    background: #f8f8f8;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item .address {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.search-result-item .district {
+    font-size: 12px;
+    color: #666;
+}
+
+.search-results.active {
+    display: block;
+}
+
+.loading {
+    padding: 15px 20px;
+    text-align: center;
+    color: #666;
+}
+
+.no-results {
+    padding: 15px 20px;
+    text-align: center;
+    color: #666;
+}
+
+.menu-nav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.header-btn {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #A2A2A2;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.3s;
+    position: relative;
+    white-space: nowrap;
+}
+
+.header-btn:hover {
+    color: #B43F20;
+    transform: translateY(-2px);
+}
+
+.orders-btn {
+    background-color: #B43F20;
+    color: white !important;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    margin-left: 12px;
+}
+
+.orders-btn:hover {
+    background-color: #8B2F18;
+    transform: translateY(-2px);
+}
+
+.cart-btn {
+    background-color: #B43F20;
+    color: white !important;
+    padding: 15px 30px;
+    border-radius: 50px;
+    height: 48px;
+    box-sizing: border-box;
+}
+
+.cart-btn:hover {
+    background-color: #8B2F18;
+    color: white !important;
+    transform: translateY(-2px);
+}
+
+/* По умолчанию показываем текст, скрываем иконку */
+.cart-btn-icon {
+    display: none;
+}
+
+/* На <1024px скрываем текст, показываем иконку, уменьшаем кнопку */
+@media (max-width: 1024px) {
+    .cart-btn {
+        padding: 12px 16px;
+        height: 48px;
+        min-width: 48px;
+    }
+    
+    .cart-btn-text {
+        display: none;
+    }
+    
+    .cart-btn-icon {
+        display: block;
+    }
+}
+
+.number-container {
+    background-color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.number {
+    color: #B43F20;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.opening-hours-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    max-width: 200px;
+}
+
+.hours-circle {
+    width: 15px;
+    height: 15px;
+    background: #B43F20;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.opening-hours-text {
+    font-weight: 600;
+    color: #B43F20;
+    line-height: 1.3;
+    word-wrap: break-word;
+}
+
+.burger-menu-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.burger-menu-panel {
+    position: relative;
+    width: 100%;
+    max-width: 315px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 15px;
+    height: 295px;
+    z-index: 10001;
+    pointer-events: auto;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.burger-btn {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px;
+    text-decoration: none;
+    border-radius: 15px;
+    background: #FFFFFF;
+    height: 120px;
+    position: relative;
+}
+
+.burger-icon-container {
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.burger-icon {
+    width: 25px;
+    height: 25px;
+}
+
+.burger-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+}
+
+.burger-text {
+    font-size: 12px;
+    color: rgba(33, 33, 33, .7);
+}
+
+.burger-btn:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.burger-btn:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.burger-btn:nth-child(3) {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.burger-btn:nth-child(4) {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.burger-sign {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#small-title {
+    font-size: 12px;
+}
+
+#small-text {
+    font-size: 10px;
+}
+
+#mobile-bg {
+    font-family: "Unbounded";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #B43F20;
+}
+
+#mobile-bg .number {
+    color: #fff;
+}
+
+#hours-small-circle {
+    width: 10px;
+    height: 10px;
+}
+
+#hours-small-text {
+    font-size: 8px;
+}
+
+#hours-container {
+    margin-top: 15px;
+}
+
+#circle {
+    background: #B43F20;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+}
+
+#arrow {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.burger-arrow {
+    width: 20px;
+    height: 20px;
+}
+
+.burger-num-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.burger-btn:nth-child(4) {
+    align-items: flex-start;
+    text-align: left;
+    padding: 15px;
+}
+
+.burger-number-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.burger-number-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.burger-number-text {
+    font-family: "Unbounded";
+    font-size: 6px;
+    color: #B43F20; 
+    font-weight: 700;
+}
+
+.burger-container {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    background: #B43F20;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    outline: none;
+    border: none;
+}
+
+.burger-container:focus {
+    outline: none;
+}
+
+.burger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        display: none;
+    }
+
+    .header {
+        background-color: rgba(255, 255, 255, .9);
+        backdrop-filter: blur(10px);
+    }
+
+    .header-container {
+        padding: 12px 20px;
+    }
+
+    /* Скрываем элементы навигации, кроме burger */
+    .orders-btn,
+    .cart-btn {
+        display: none;
+    }
+
+    /* Показываем burger */
+    .burger-container {
+        display: flex !important;
+    }
+
+    .opening-hours-container {
+        max-width: 150px;
+        font-size: 13px;
+    }
+
+    .opening-hours-text {
+        font-size: 13px;
+    }
+
+    .logo {
+        height: 45px;
+    }
+}
+/* Mobile header adjustments - ≤896px */
+@media (max-width: 896px) {
+    .search-container {
+        display: none;
+    }
+    
+    .header-container {
+        justify-content: space-between;
+        gap: 15px;
+    }
+    
+    .opening-hours-container {
+        flex: 0 0 auto;
+        max-width: 170px;
+    }
+    
+    .menu-nav {
+        flex: 0 0 auto;
+        gap: 10px;
+    }
+    
+    .burger-container {
+        display: flex;
+    }
+}
+
+@media (min-width: 897px) {
+    .burger-container {
+        display: none !important;
+    }
+    
+    .opening-hours-container {
+        order: 3;
+    }
+    
+    .cart-btn {
+        order: 1;
+    }
+    
+    .orders-btn {
+        order: 2;
+    }
+}
+
+/* Дополнительные улучшения для очень маленьких экранов */
+@media (max-width: 480px) {
+    .header-container {
+        padding: 10px 16px;
+    }
+
+    .logo {
+        height: 40px;
+    }
+
+    .opening-hours-container {
+        max-width: 120px;
+        font-size: 12px;
+    }
+
+    .opening-hours-text {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+
+    .burger-container {
+        width: 40px;
+        height: 40px;
+        gap: 4px;
+    }
+
+    .burger-line {
+        width: 22px;
+        height: 2.5px;
+    }
+}
+
+@media (max-width: 375px) {
+    /* Показываем корзину и отслеживание */
+    .orders-btn,
+    .cart-btn {
+        display: flex !important;
+    }
+    
+    /* Показываем burger */
+    .burger-container {
+        display: flex !important;
+        width: 36px;
+        height: 36px;
+    }
+    
+    .burger-line {
+        width: 20px;
+        height: 2px;
+    }
+    
+    /* Компактные кнопки */
+    .orders-btn {
+        width: 36px;
+        height: 36px;
+        margin-right: 6px;
+    }
+    
+    .cart-btn {
+        height: 36px;
+        padding: 8px 12px;
+        min-width: auto;
+        margin-right: 8px;
+    }
+    
+    .cart-btn-text {
+        display: none;
+    }
+    
+    .cart-btn-icon {
+        display: block;
+    }
+    
+    .number-container {
+        width: 20px;
+        height: 20px;
+        margin-left: 6px;
+    }
+    
+    .number {
+        font-size: 10px;
+    }
+    
+    /* Скрываем часы работы */
+    .opening-hours-container {
+        display: none;
+    }
+}
+
+@media (max-width: 360px) {
+    .header-container {
+        padding: 10px 12px;
+    }
+
+    .logo {
+        height: 35px;
+    }
+    
+    .orders-btn {
+        width: 34px;
+        height: 34px;
+        margin-right: 5px;
+    }
+    
+    .cart-btn {
+        height: 34px;
+        padding: 6px 10px;
+        margin-right: 6px;
+    }
+    
+    .number-container {
+        width: 18px;
+        height: 18px;
+        margin-left: 5px;
+    }
+    
+    .number {
+        font-size: 9px;
+    }
+    
+    .burger-container {
+        width: 34px;
+        height: 34px;
+    }
+    
+    .burger-line {
+        width: 18px;
+    }
+}
+
+@media (max-width: 320px) {
+    .header-container {
+        padding: 8px 10px;
+    }
+
+    .logo {
+        height: 32px;
+    }
+    
+    .orders-btn {
+        width: 32px;
+        height: 32px;
+        margin-right: 4px;
+    }
+    
+    .cart-btn {
+        height: 32px;
+        padding: 5px 8px;
+        margin-right: 5px;
+    }
+    
+    .number-container {
+        width: 16px;
+        height: 16px;
+        margin-left: 4px;
+    }
+    
+    .number {
+        font-size: 8px;
+    }
+    
+    .burger-container {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .burger-line {
+        width: 18px;
+    }
+}
+
+/* ============================================
+   НОВОЕ BURGER МЕНЮ
+   ============================================ */
+
+.burger-menu-overlay {
+    position: fixed;
+    top: 73px; /* Начинается под header */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+    pointer-events: auto;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.burger-menu-content {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    max-width: 100%;
+    animation: slideDown 0.3s ease;
+    z-index: 1000;
+    pointer-events: auto;
+    border-radius: 0 0 24px 24px; /* Закругления снизу по дизайн-системе */
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.burger-menu-section {
+    margin-bottom: 20px;
+}
+
+.burger-menu-section:last-child {
+    margin-bottom: 0;
+}
+
+.burger-menu-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.burger-menu-status {
+    padding: 12px 16px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .burger-menu-overlay {
+        top: 60px;
+    }
+    
+    .burger-menu-content {
+        top: 60px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 375px) {
+    .burger-menu-overlay {
+        top: 60px;
+    }
+    
+    .burger-menu-content {
+        top: 60px;
+        padding: 12px;
+    }
+    
+    .burger-menu-section {
+        margin-bottom: 16px;
+    }
+    
+    .burger-menu-label {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    
+    .burger-menu-status {
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 320px) {
+    .burger-menu-overlay {
+        top: 52px;
+    }
+    
+    .burger-menu-content {
+        top: 52px;
+        padding: 10px;
+    }
+    
+    .burger-menu-section {
+        margin-bottom: 12px;
+    }
+    
+    .burger-menu-label {
+        font-size: 12px;
+        gap: 6px;
+    }
+    
+    .burger-menu-status {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+/* Сдвигаем toast вниз когда burger-меню открыто и повышаем z-index */
+body.burger-menu-open .toast-container {
+    top: 320px !important;
+    z-index: 10000 !important;
+}
+
+@media (max-width: 768px) {
+    body.burger-menu-open .toast-container {
+        top: 300px !important;
+    }
+}
+
+@media (max-width: 375px) {
+    body.burger-menu-open .toast-container {
+        top: 260px !important;
+    }
+}
+
+@media (max-width: 320px) {
+    body.burger-menu-open .toast-container {
+        top: 240px !important;
+    }
+}
+
+@media (max-width: 425px) {
+    /* Показываем корзину и отслеживание */
+    .orders-btn,
+    .cart-btn {
+        display: flex !important;
+    }
+    
+    /* Показываем burger */
+    .burger-container {
+        display: flex !important;
+        width: 36px;
+        height: 36px;
+    }
+    
+    .burger-line {
+        width: 20px;
+        height: 2px;
+    }
+    
+    /* Компактные кнопки */
+    .orders-btn {
+        width: 36px;
+        height: 36px;
+        margin-right: 6px;
+    }
+    
+    .cart-btn {
+        height: 36px;
+        padding: 8px 12px;
+        min-width: auto;
+        margin-right: 8px;
+    }
+    
+    .cart-btn-text {
+        display: none;
+    }
+    
+    .cart-btn-icon {
+        display: block;
+    }
+    
+    .number-container {
+        width: 20px;
+        height: 20px;
+        margin-left: 6px;
+    }
+    
+    .number {
+        font-size: 10px;
+    }
+    
+    /* Скрываем часы работы */
+    .opening-hours-container {
+        display: none;
+    }
+}
+
+@media (min-width: 376px) and (max-width: 425px) {
+    body.burger-menu-open .toast-container {
+        top: 280px !important;
+    }
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+    /* Показываем корзину и отслеживание */
+    .orders-btn,
+    .cart-btn {
+        display: flex !important;
+    }
+    
+    /* Показываем burger */
+    .burger-container {
+        display: flex !important;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .burger-line {
+        width: 22px;
+        height: 2px;
+    }
+    
+    /* Компактные кнопки */
+    .orders-btn {
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+    }
+    
+    .cart-btn {
+        height: 40px;
+        padding: 10px 14px;
+        min-width: auto;
+        margin-right: 10px;
+    }
+    
+    .cart-btn-text {
+        display: none;
+    }
+    
+    .cart-btn-icon {
+        display: block;
+    }
+    
+    .number-container {
+        width: 22px;
+        height: 22px;
+        margin-left: 8px;
+    }
+    
+    .number {
+        font-size: 11px;
+    }
+    
+    /* Скрываем часы работы */
+    .opening-hours-container {
+        display: none;
+    }
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ЮБАБА</title>
+
+    <!-- Сохраняем подключение существующих стилей по абсолютным путям -->
+    <link rel="stylesheet" href="/Css/footer.css" />
+    <link rel="stylesheet" href="/Css/header.css" />
+    <link rel="stylesheet" href="/Css/style.css" />
+    <link rel="stylesheet" href="/Css/cart.css" />
+    <link rel="stylesheet" href="/Css/order.css" />
+
+    <!-- Шрифты как в исходном HTML -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Unbounded:wght@200..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Preload критических ресурсов - только логотип и первое фоновое изображение -->
+    <link rel="preload" as="image" href="/Images/Icons/LOGO.png" />
+    <link rel="preload" as="image" href="/Images/27daf6067b7793727c9185f9b8fbf01a_1765394980.png" fetchpriority="high" />
+    <!-- Остальные фоновые изображения загружаются динамически через HeroSlider -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

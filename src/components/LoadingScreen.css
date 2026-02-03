@@ -1,0 +1,117 @@
+/* Экран загрузки - белый минималистичный дизайн */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
+
+.loading-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Логотип */
+.logo-container {
+  animation: logoFadeIn 0.8s ease-out;
+}
+
+.loading-logo {
+  width: 200px;
+  height: auto;
+  animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes logoPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* Спиннер - LoaderCircle иконка */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner-icon {
+  width: 48px;
+  height: 48px;
+  color: #ff6b6b;
+  animation: spinnerRotate 1s linear infinite;
+}
+
+@keyframes spinnerRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Текст */
+.loading-text {
+  color: #333333;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  animation: textFade 1.5s ease-in-out infinite;
+}
+
+@keyframes textFade {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .loading-logo {
+    width: 150px;
+  }
+
+  .spinner-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .loading-text {
+    font-size: 0.9rem;
+  }
+}
